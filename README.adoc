@@ -1,0 +1,19 @@
+= My Neovim Config
+
+Just a basic config
+
+image::images/starter.png[Starter screen]
+
+See it in action here:
+
+image::https://img.youtube.com/vi/U8XBPkBnx-o/0.jpg[link="https://youtu.be/U8XBPkBnx-o"]
+
+== What's included
+
+* LSP integration
+** Language integrations (just what I use, see `lua/plugins/langs`)
+* Git integration
+* https://github.com/Aloxaf/silicon[Silicon] integration
+* https://github.com/echasnovski/mini.nvim[mini.nvim] over more popular alternatives
+* Custom lazy loading event
+* Templates
