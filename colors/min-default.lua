@@ -122,16 +122,30 @@ vim.g.terminal_color_14 = vim.g.terminal_color_6
 vim.g.terminal_color_15 = vim.g.terminal_color_7
 
 -- statusline and winbar
-if vim.o.background == "dark" then
-	vim.api.nvim_set_hl(0, "StatusLineError", { fg = "NvimDarkGrey3", bg = "NvimLightRed" })
-	vim.api.nvim_set_hl(0, "StatusLineWarning", { fg = "NvimDarkGrey3", bg = "NvimLightYellow" })
+local function set_statusline_color(name, color)
+	color = "NvimLight" .. color
+	local fg = vim.o.background == "dark" and "NvimDarkGrey3" or color
+	local bg = vim.o.background == "dark" and color or "NvimDarkGrey3"
 
-	vim.api.nvim_set_hl(0, "WinBarError", { fg = "NvimLightRed", bg = "NvimDarkGrey1" })
-	vim.api.nvim_set_hl(0, "WinBarWarning", { fg = "NvimLightYellow", bg = "NvimDarkGrey1" })
-else
-	vim.api.nvim_set_hl(0, "StatusLineError", { fg = "NvimLightRed", bg = "NvimDarkGrey3" })
-	vim.api.nvim_set_hl(0, "StatusLineWarning", { fg = "NvimLightYellow", bg = "NvimDarkGrey3" })
-
-	vim.api.nvim_set_hl(0, "WinBarError", { fg = "NvimDarkGrey4", bg = "NvimLightRed" })
-	vim.api.nvim_set_hl(0, "WinBarWarning", { fg = "NvimDarkGrey4", bg = "NvimLightYellow" })
+	vim.api.nvim_set_hl(0, name, { fg = fg, bg = bg })
 end
+
+local function set_winbar_color(name, color)
+	color = "NvimLight" .. color
+	local fg = vim.o.background == "dark" and color or "NvimDarkGrey4"
+	local bg = vim.o.background == "dark" and "NvimDarkGrey1" or color
+
+	vim.api.nvim_set_hl(0, name, { fg = fg, bg = bg })
+end
+
+set_statusline_color("StatusLineGreen", "Green")
+set_statusline_color("StatusLineYellow", "Yellow")
+set_statusline_color("StatusLineRed", "Red")
+set_statusline_color("StatusLineBlue", "Blue")
+set_statusline_color("StatusLineCyan", "Cyan")
+
+set_winbar_color("WinBarGreen", "Green")
+set_winbar_color("WinBarYellow", "Yellow")
+set_winbar_color("WinBarRed", "Red")
+set_winbar_color("WinBarBlue", "Blue")
+set_winbar_color("WinBarCyan", "Cyan")

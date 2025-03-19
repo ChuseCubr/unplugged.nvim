@@ -15,11 +15,12 @@ function M.init_lsp_client(config, opts)
 
 		local client = vim.lsp.start(config, opts)
 		if client == nil then
-			vim.api.nvim_echo(
+			vim.api.nvim_echo({
 				{
 					"Failed to start LSP Server for " .. config.name,
 					"DiagnosticError",
-				}, false, {})
+				}
+			}, false, {})
 			return
 		end
 

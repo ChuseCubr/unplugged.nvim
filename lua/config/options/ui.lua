@@ -1,5 +1,3 @@
-require("config.options.statusline")
-
 -- better colors (on supported terms)
 vim.o.termguicolors = true
 
@@ -9,9 +7,10 @@ vim.o.shortmess = vim.o.shortmess .. "I"
 -- ui elements
 vim.o.title = true
 vim.o.laststatus = 3
+
+-- cursor
 vim.o.guicursor = "n-v-c-i:block"
 vim.o.colorcolumn = "80"
-
 vim.o.cursorline = true
 vim.o.cursorcolumn = true
 
@@ -28,7 +27,7 @@ vim.opt.listchars:append({
 	eol = "↲",
 
 	-- Spaces
-	trail = "⋅",
+	space = "⋅",
 	tab = "→ ",
 	nbsp = "␣",
 
@@ -50,3 +49,6 @@ vim.cmd.colorscheme("min-default")
 
 -- gui
 vim.o.guifont = "IosevkaTerm_NFM:h16"
+
+-- neovide
+vim.g.neovide_transparency = 0.9

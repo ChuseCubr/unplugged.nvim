@@ -59,7 +59,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		"templ",
 	},
 	callback = utils.init_lsp_client({
-		cmd = { "tailwindcss-language-server", "--stdio" },
+		cmd = { "tailwindcss-language-server.cmd", "--stdio" },
 		root_markers = {
 			"tailwind.config.js",
 			"tailwind.config.cjs",

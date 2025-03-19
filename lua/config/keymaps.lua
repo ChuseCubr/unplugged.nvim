@@ -14,15 +14,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 -- still cursor on J
 vim.keymap.set("n", "J", "mzJ`z")
 
--- center cursor
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-
 -- diagnostics
-vim.keymap.set("n", "[d", "[dzz", { desc = "Prev diagnostic" })
-vim.keymap.set("n", "]d", "]dzz", { desc = "Next diagnostic" })
 vim.keymap.set("n", "<leader>ce", vim.diagnostic.open_float, { desc = "[E]rrors" })
 vim.keymap.set("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "To [L]ocation list" })
 vim.keymap.set("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "To [Q]uickfix list" })
@@ -33,6 +25,9 @@ vim.keymap.set("n", "<leader><leader>", _G.Picker.bufs, { desc = "Open buffers (
 
 -- TODO: TO BE DEPRECATED, will become defaults in 0.11
 -- unimpaired mappings
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+
 vim.keymap.set("n", "[q", "<cmd>cprev<cr>zz", { desc = "Prev quickfix entry" })
 vim.keymap.set("n", "]q", "<cmd>cnext<cr>zz", { desc = "Next quickfix entry" })
 vim.keymap.set("n", "[Q", "<cmd>cr<cr>zz", { desc = "First quickfix entry" })

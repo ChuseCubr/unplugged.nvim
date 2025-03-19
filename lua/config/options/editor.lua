@@ -13,11 +13,12 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.hlsearch = false
 
--- commandline completion settings
+-- completion settings
 vim.o.shellslash = true
 vim.o.wildmenu = true
 vim.o.wildoptions = "pum,tagfile,fuzzy"
-vim.o.wildignore = vim.o.wildignore .. ",*/node_modules/*,"
+vim.o.completeopt = "menu,menuone,popup,noinsert,noselect"
+vim.o.wildignore = vim.o.wildignore .. ",*/node_modules/*,*/bin/*,*/obj/*,"
 
 -- indent options
 vim.o.breakindent = true
@@ -25,15 +26,18 @@ vim.o.expandtab = false
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
 
+-- keymap behavior
 vim.o.timeoutlen = 300
+
+-- enable mouse
 vim.o.mouse = "a"
 
+-- wrap behavior
 vim.o.linebreak = true
+
+-- window behavior
 vim.o.splitbelow = true
 vim.o.splitright = true
-
-vim.o.completeopt = "menu,menuone,popup,noinsert,noselect"
-vim.g.python3_host_prog = "C:/Users/Chase/scoop/apps/python/current/python.exe"
 
 -- netrw
 vim.g.netrw_banner = 0
@@ -42,5 +46,5 @@ vim.g.netrw_sizestyle = "H"
 vim.g.netrw_sort_sequence = "^\\f\\+[\\/]"
 vim.g.netrw_list_hide = vim.fn["netrw_gitignore#Hide"]() .. ",^\\.\\{1,2}\\f\\+[\\/]\\?"
 
--- Cfilter
+-- qflist filter
 vim.cmd.packadd("cfilter")
