@@ -37,11 +37,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "grn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 		vim.keymap.set("n", "gra", vim.lsp.buf.code_action, { desc = "Code action" })
 
-		vim.api.nvim_echo({
-			{
-				"LSP Client for `" .. client.name .. "` successfully attached",
-				"DiagnosticOk",
-			}
-		}, false, {})
+		vim.schedule(function()
+			vim.api.nvim_echo({
+				{
+					"LSP Client for `" .. client.name .. "` successfully attached",
+					"DiagnosticOk",
+				}
+			}, true, {})
+		end)
 	end,
 })

@@ -9,14 +9,10 @@ function _G.HighlightCommentsEnable()
 	vim.api.nvim_set_hl(0, "Comment", { ctermfg = 11, fg = "NvimLightYellow" })
 end
 
-vim.api.nvim_create_user_command("HighlightCommentsEnable", _G.HighlightCommentsEnable, {})
-
 function _G.HighlightCommentsDisable()
-	vim.api.nvim_set_hl(0, "Comment", { fg = old_comment_hl.fg } )
+	vim.api.nvim_set_hl(0, "Comment", { fg = old_comment_hl.fg })
 	highlight_comments = false
 end
-
-vim.api.nvim_create_user_command("HighlightCommentsDisable", _G.HighlightCommentsDisable, {})
 
 function _G.HighlightCommentsToggle()
 	highlight_comments = not highlight_comments
@@ -27,9 +23,7 @@ function _G.HighlightCommentsToggle()
 	end
 end
 
-vim.api.nvim_create_user_command("HighlightCommentsToggle", _G.HighlightCommentsToggle, {})
-
-local highlight_comments_group = vim.api.nvim_create_augroup("chuse_comments", { clear = true })
+local highlight_comments_group = vim.api.nvim_create_augroup("UnpluggedComments", { clear = true })
 vim.api.nvim_create_autocmd("ColorScheme", {
 	group = highlight_comments_group,
 	callback = function()
@@ -54,14 +48,10 @@ function _G.TransparentBackgroundEnable()
 	vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 end
 
-vim.api.nvim_create_user_command("TransparentBackgroundEnable", _G.TransparentBackgroundEnable, {})
-
 function _G.TransparentBackgroundDisable()
 	transparent_background = false
 	vim.api.nvim_set_hl(0, "Normal", { bg = old_normal_hl.bg })
 end
-
-vim.api.nvim_create_user_command("TransparentBackgroundDisable", _G.TransparentBackgroundDisable, {})
 
 function _G.TransparentBackgroundToggle()
 	transparent_background = not transparent_background
@@ -72,9 +62,7 @@ function _G.TransparentBackgroundToggle()
 	end
 end
 
-vim.api.nvim_create_user_command("TransparentBackgroundToggle", _G.TransparentBackgroundToggle, {})
-
-local transparent_background_group = vim.api.nvim_create_augroup("chuse_background", { clear = true })
+local transparent_background_group = vim.api.nvim_create_augroup("UnpluggedTransparency", { clear = true })
 vim.api.nvim_create_autocmd("ColorScheme", {
 	group = transparent_background_group,
 	callback = function()
@@ -84,5 +72,13 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 	end,
 })
+
+vim.api.nvim_create_user_command("HighlightCommentsEnable", _G.HighlightCommentsEnable, {})
+vim.api.nvim_create_user_command("HighlightCommentsDisable", _G.HighlightCommentsDisable, {})
+vim.api.nvim_create_user_command("HighlightCommentsToggle", _G.HighlightCommentsToggle, {})
+
+vim.api.nvim_create_user_command("TransparentBackgroundEnable", _G.TransparentBackgroundEnable, {})
+vim.api.nvim_create_user_command("TransparentBackgroundDisable", _G.TransparentBackgroundDisable, {})
+vim.api.nvim_create_user_command("TransparentBackgroundToggle", _G.TransparentBackgroundToggle, {})
 
 vim.api.nvim_exec_autocmds("ColorScheme", {})

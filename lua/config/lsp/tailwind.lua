@@ -1,4 +1,4 @@
-local utils = require("config.lsp.utils")
+local utils = require("utils.lsp")
 
 vim.api.nvim_create_autocmd("FileType", {
 	-- filetypes copied and adjusted from tailwindcss-intellisense

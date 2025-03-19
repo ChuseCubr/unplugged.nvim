@@ -1,4 +1,4 @@
-local utils = require("config.lsp.utils")
+local utils = require("utils.lsp")
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "lua",
 	callback = utils.init_lsp_client({

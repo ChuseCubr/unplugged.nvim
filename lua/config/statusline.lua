@@ -1,3 +1,5 @@
+local git = require("utils.git")
+
 local M = {}
 
 local statusline = {
@@ -35,79 +37,13 @@ function _G._statusline_component(component, ...)
 	return M[component](...)
 end
 
-local git_branch = ""
-local git_branch_status = ""
-local git_buf_statuses = {}
-
-local git_group = vim.api.nvim_create_augroup("GitStatusLine", { clear = true })
-local git_branch_events = { "BufEnter", "ShellCmdPost", "FocusGained" }
-local git_file_events = vim.list_extend(git_branch_events, { "BufWritePost" })
-local function get_git_cmd_opts()
-	return { text = true, cwd = vim.fn.expand("%:p:h") }
-end
-
-vim.api.nvim_create_autocmd(git_branch_events, {
-	group = git_group,
-	callback = function()
-		vim.system(
-			{ "git", "branch", "--show-current" },
-			get_git_cmd_opts(),
-			function(obj)
-				if obj.stdout == nil then
-					git_branch = ""
-					return
-				end
-
-				git_branch = obj.stdout:sub(1, -2)
-
-				M.update()
-			end
-		)
-	end
-})
-
-vim.api.nvim_create_autocmd(git_file_events, {
-	group = git_group,
-	callback = function(args)
-		vim.system(
-			{ "git", "status", "-s" },
-			get_git_cmd_opts(),
-			function(obj)
-				if obj.stdout == nil then
-					git_branch_status = ""
-					return
-				end
-
-				git_branch_status = "*"
-				M.update()
-			end
-		)
-
-		vim.system(
-			{ "git", "status", "-s", vim.fn.expand("%:p") },
-			get_git_cmd_opts(),
-			function(obj)
-				if obj.stdout == nil then
-					git_branch = ""
-					return
-				end
-
-				local status = obj.stdout:sub(1, 2):gsub(" ", "-")
-				git_buf_statuses[args.buf] = status
-
-				M.update()
-			end
-		)
-	end
-})
-
 function M.git_branch()
-	if git_branch:len() == 0 then return "" end
-	return "[" .. git_branch .. git_branch_status .. "] "
+	if git.branch_name:len() == 0 then return "" end
+	return "[" .. git.branch_name .. git.branch_status .. "] "
 end
 
 function M.git_status()
-	local cur_buf_status = git_buf_statuses[vim.fn.bufnr()]
+	local cur_buf_status = git.buf_statuses[vim.fn.bufnr()]
 	if cur_buf_status == nil then return "" end
 	if cur_buf_status:len() == 0 then return "" end
 	return "[" .. cur_buf_status .. "]"
@@ -145,13 +81,21 @@ end
 function M.statusline_diagnostic_highlight()
 	if M.diagnostic_status() == "X" then return "%#StatusLineRed#" end
 	if M.diagnostic_status() == "!" then return "%#StatusLineYellow#" end
+	if M.diagnostic_status() == "H" then return "%#StatusLineBlue#" end
+	if M.diagnostic_status() == "i" then return "%#StatusLineCyan#" end
 	return ""
 end
 
 function M.winbar_diagnostic_highlight()
 	if M.diagnostic_status() == "X" then return "%#WinBarRed#" end
 	if M.diagnostic_status() == "!" then return "%#WinBarYellow#" end
+	if M.diagnostic_status() == "H" then return "%#WinBarBlue#" end
+	if M.diagnostic_status() == "i" then return "%#WinBarCyan#" end
 	return ""
 end
+
+git.setup({
+	on_exit = M.update
+})
 
 M.update()
