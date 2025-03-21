@@ -17,17 +17,33 @@ M.branch_status = ""
 M.buf_statuses = {}
 
 
--- PRIVATE FIELDS / SETTINGS
+-- SETTINGS
+
+---Branch tracking/staging status signs
+local opts = {}
+opts.signs = {}
+opts.signs.behind = "↓"
+opts.signs.ahead = "↑"
+opts.signs.staged = "+"
+opts.signs.unstaged = "*"
+
+---Events to trigger calling `git branch` commands
+---@type string[]
+opts.branch_events = { "BufEnter", "ShellCmdPost", "FocusGained" }
+
+---Events to trigger calling `git status` and `git diff` commands
+---@type string[]
+opts.file_events = { "BufEnter", "ShellCmdPost", "FocusGained", "BufWritePost" }
+
+---Prefix for events to be emitted after updating Git info
+---@type string
+opts.event_prefix = "UnpluggedGit"
+
+
+-- PRIVATE FIELDS
 
 ---Setup guard
 local setup = false
-
----Branch tracking/staging status signs
-local signs = {}
-signs.behind = "↓"
-signs.ahead = "↑"
-signs.staged = "+"
-signs.unstaged = "*"
 
 
 -- PRIVATE METHODS / UTILS
@@ -41,7 +57,7 @@ end
 ---@param pattern string
 local function exec_autocmd(pattern)
 	vim.schedule(function()
-		vim.api.nvim_exec_autocmds("User", { pattern = "UnpluggedGit" .. pattern })
+		vim.api.nvim_exec_autocmds("User", { pattern = opts.event_prefix .. pattern })
 	end)
 end
 
@@ -54,8 +70,8 @@ local function update_branch_tracking(branch_info)
 		local behind = tracking_info:find("behind")
 		local ahead = tracking_info:find("ahead")
 
-		M.branch_status = M.branch_status .. (behind and signs.behind or "")
-		M.branch_status = M.branch_status .. (ahead and signs.ahead or "")
+		M.branch_status = M.branch_status .. (behind and opts.signs.behind or "")
+		M.branch_status = M.branch_status .. (ahead and opts.signs.ahead or "")
 	end
 end
 
@@ -82,8 +98,8 @@ local function update_branch_staging(git_status)
 	)
 	local has_unstaged = not vim.tbl_isempty(unstaged)
 
-	M.branch_status = M.branch_status .. (has_staged and signs.staged or "")
-	M.branch_status = M.branch_status .. (has_unstaged and signs.unstaged or "")
+	M.branch_status = M.branch_status .. (has_staged and opts.signs.staged or "")
+	M.branch_status = M.branch_status .. (has_unstaged and opts.signs.unstaged or "")
 end
 
 
@@ -162,17 +178,15 @@ function M.setup()
 	setup = true
 
 	local git_group = vim.api.nvim_create_augroup("UnpluggedGit", { clear = true })
-	local file_events = { "BufEnter", "ShellCmdPost", "FocusGained", "BufWritePost" }
-	local branch_events = { "BufEnter", "ShellCmdPost", "FocusGained" }
 
-	vim.api.nvim_create_autocmd(branch_events, {
+	vim.api.nvim_create_autocmd(opts.branch_events, {
 		group = git_group,
 		callback = function()
 			M.update_branch_name()
 		end
 	})
 
-	vim.api.nvim_create_autocmd(file_events, {
+	vim.api.nvim_create_autocmd(opts.file_events, {
 		group = git_group,
 		callback = function(args)
 			M.update_branch_status()
