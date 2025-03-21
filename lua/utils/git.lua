@@ -1,18 +1,13 @@
 local M = {}
 
----Setup guard
-local setup = false
+
+-- PUBLIC FIELDS
 
 ---The name of the branch the current buffer is in
 ---@type string
 M.branch_name = ""
 
 ---The tracking and staging info of the branch the current buffer is in
----Legend:
----  ↓ - (Tracking) Local branch is behind
----  ↑ - (Tracking) Local branch is ahead
----  + - (Staging) Local branch has staged changes
----  * - (Staging) Local branch has unstaged changes
 ---@type string
 M.branch_status = ""
 
@@ -21,49 +16,46 @@ M.branch_status = ""
 ---@type string[]
 M.buf_statuses = {}
 
----@class GitHelperOpts
----@field on_exit fun():any Function invoked after updating Git info
 
----@class AutocmdCallbackArgs
----@field buf integer Buffer number of the event
+-- PRIVATE FIELDS / SETTINGS
 
+---Setup guard
+local setup = false
+
+---Branch tracking/staging status signs
+local signs = {}
+signs.behind = "↓"
+signs.ahead = "↑"
+signs.staged = "+"
+signs.unstaged = "*"
+
+
+-- PRIVATE METHODS / UTILS
+
+---vim.system() opts for current file dir
 local function get_git_cmd_opts()
 	return { text = true, cwd = vim.fn.expand("%:p:h") }
 end
 
----Updates branch_name
----@param opts GitHelperOpts
-local function update_branch_name(opts)
-	vim.system(
-		{ "git", "branch", "--show-current" },
-		get_git_cmd_opts(),
-		function(obj)
-			if obj.stdout == nil then
-				M.branch_name = ""
-				return
-			end
-
-			M.branch_name = obj.stdout:sub(1, -2)
-
-			if opts ~= nil and opts.on_exit ~= nil then
-				opts.on_exit()
-			end
-		end
-	)
+---Autocmd invoker wrapper
+---@param pattern string
+local function exec_autocmd(pattern)
+	vim.schedule(function()
+		vim.api.nvim_exec_autocmds("User", { pattern = "UnpluggedGit" .. pattern })
+	end)
 end
 
 ---Updates branch tracking info of `branch_status`
 ---@param branch_info string First line of the output of `git status -sb`
 local function update_branch_tracking(branch_info)
-	local tracking_idx = branch_info:find("%[")
+	local _, _, tracking_info = branch_info:find("(%[.+)$")
 
-	if tracking_idx then
-		local tracking_info = branch_info:sub(tracking_idx, -1)
+	if tracking_info then
 		local behind = tracking_info:find("behind")
 		local ahead = tracking_info:find("ahead")
 
-		M.branch_status = M.branch_status .. (behind and "↓" or "")
-		M.branch_status = M.branch_status .. (ahead and "↑" or "")
+		M.branch_status = M.branch_status .. (behind and signs.behind or "")
+		M.branch_status = M.branch_status .. (ahead and signs.ahead or "")
 	end
 end
 
@@ -90,14 +82,35 @@ local function update_branch_staging(git_status)
 	)
 	local has_unstaged = not vim.tbl_isempty(unstaged)
 
-	M.branch_status = M.branch_status .. (has_staged and "+" or "")
-	M.branch_status = M.branch_status .. (has_unstaged and "*" or "")
+	M.branch_status = M.branch_status .. (has_staged and signs.staged or "")
+	M.branch_status = M.branch_status .. (has_unstaged and signs.unstaged or "")
 end
 
----Updates branch_status
----@param args AutocmdCallbackArgs
----@param opts GitHelperOpts
-local function update_branch_status(args, opts)
+
+-- PUBLIC METHODS
+
+---Updates `branch_name`
+---Emits the `UnpluggedGitBranchName` event upon completion
+function M.update_branch_name()
+	vim.system(
+		{ "git", "branch", "--show-current" },
+		get_git_cmd_opts(),
+		function(obj)
+			if obj.stdout == nil then
+				M.branch_name = ""
+				return
+			end
+
+			M.branch_name = obj.stdout:sub(1, -2)
+
+			exec_autocmd("BranchName")
+		end
+	)
+end
+
+---Updates `branch_status`
+---Emits the `UnpluggedGitBranchStatus` event upon completion
+function M.update_branch_status()
 	vim.system(
 		{ "git", "status", "-sb" },
 		get_git_cmd_opts(),
@@ -113,12 +126,15 @@ local function update_branch_status(args, opts)
 			update_branch_tracking(lines[1])
 			update_branch_staging(lines)
 
-			if opts ~= nil and opts.on_exit ~= nil then
-				opts.on_exit()
-			end
+			exec_autocmd("BranchStatus")
 		end
 	)
+end
 
+---Updates `buf_statuses`
+---Emits the `UnpluggedGitBufStatus` event upon completion
+---@param buf integer Buffer number
+function M.update_buf_status(buf)
 	vim.system(
 		{ "git", "status", "-s", vim.fn.expand("%:p") },
 		get_git_cmd_opts(),
@@ -129,41 +145,38 @@ local function update_branch_status(args, opts)
 			end
 
 			local status = obj.stdout:sub(1, 2):gsub(" ", "-")
-			M.buf_statuses[args.buf] = status
+			M.buf_statuses[buf] = status
 
-			if opts ~= nil and opts.on_exit ~= nil then
-				opts.on_exit()
-			end
+			exec_autocmd("BufStatus")
 		end
 	)
 end
 
-
 ---Create autocmds to update Git info automatically
----
----opts: a table containing the following fields:
----  - on_exit: A function invoked after Git info is updated
----
----@param opts GitHelperOpts
-function M.setup(opts)
+---Upon setup, autocmds will emit the following events:
+---  - `UnpluggedGitBranchName`
+---  - `UnpluggedGitBranchStatus`
+---  - `UnpluggedGitBufStatus`
+function M.setup()
 	if setup == true then return end
 	setup = true
 
 	local git_group = vim.api.nvim_create_augroup("UnpluggedGit", { clear = true })
-	local git_branch_events = { "BufEnter", "ShellCmdPost", "FocusGained" }
-	local git_file_events = vim.list_extend(git_branch_events, { "BufWritePost" })
+	local file_events = { "BufEnter", "ShellCmdPost", "FocusGained", "BufWritePost" }
+	local branch_events = { "BufEnter", "ShellCmdPost", "FocusGained" }
 
-	vim.api.nvim_create_autocmd(git_branch_events, {
+	vim.api.nvim_create_autocmd(branch_events, {
 		group = git_group,
 		callback = function()
-			update_branch_name(opts)
+			M.update_branch_name()
 		end
 	})
 
-	vim.api.nvim_create_autocmd(git_file_events, {
+	vim.api.nvim_create_autocmd(file_events, {
 		group = git_group,
 		callback = function(args)
-			update_branch_status(args, opts)
+			M.update_branch_status()
+			M.update_buf_status(args.buf)
 		end
 	})
 end

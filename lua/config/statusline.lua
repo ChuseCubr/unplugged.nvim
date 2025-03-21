@@ -1,4 +1,5 @@
 local git = require("utils.git")
+git.setup()
 
 local M = {}
 
@@ -94,8 +95,11 @@ function M.winbar_diagnostic_highlight()
 	return ""
 end
 
-git.setup({
-	on_exit = M.update
+local group = vim.api.nvim_create_augroup("UnpluggedStatusLine", { clear = true })
+vim.api.nvim_create_autocmd("User", {
+	pattern = { "UnpluggedGitBranchName", "UnpluggedGitBranchStatus", "UnpluggedGitBufStatus" },
+	group = group,
+	callback = M.update,
 })
 
 M.update()
