@@ -87,7 +87,8 @@ local function update_branch_staging(git_status)
 	local staged = vim.tbl_map(
 		function(line)
 			local staged_info = line:sub(1, 1)
-			local is_staged = not (staged_info == "#" or staged_info == " " or staged_info == "?")
+			local not_staged_markers = { "#", " ", "?" }
+			local is_staged = not vim.list_contains(not_staged_markers, staged_info)
 			return is_staged and true or nil
 		end,
 		git_status
@@ -97,7 +98,8 @@ local function update_branch_staging(git_status)
 	local unstaged = vim.tbl_map(
 		function(line)
 			local unstaged_info = line:sub(2, 2)
-			local is_unstaged = not (unstaged_info == "#" or unstaged_info == " ")
+			local not_unstaged_markers = { "#", " " }
+			local is_unstaged = not vim.list_contains(not_unstaged_markers, unstaged_info)
 			return is_unstaged and true or nil
 		end,
 		git_status
