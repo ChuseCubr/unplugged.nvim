@@ -53,6 +53,12 @@ local function get_git_cmd_opts()
 	return { text = true, cwd = vim.fn.expand("%:p:h") }
 end
 
+---Expand and escape file name
+---@param buf integer Buffer number
+local function get_buf_path(buf)
+	return vim.fn.fnameescape(vim.api.nvim_buf_get_name(buf))
+end
+
 ---Autocmd invoker wrapper
 ---@param pattern string
 local function exec_autocmd(pattern)
@@ -152,7 +158,7 @@ end
 ---@param buf integer Buffer number
 function M.update_buf_status(buf)
 	vim.system(
-		{ "git", "status", "-s", vim.fn.expand("%:p") },
+		{ "git", "status", "-s", get_buf_path(buf) },
 		get_git_cmd_opts(),
 		function(obj)
 			if obj.stdout == nil then
