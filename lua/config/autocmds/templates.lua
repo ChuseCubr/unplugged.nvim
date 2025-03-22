@@ -1,6 +1,6 @@
 local template_path = vim.fn.stdpath("config") .. "/templates"
 
-local group = vim.api.nvim_create_augroup("Templates", { clear = true })
+local group = vim.api.nvim_create_augroup(_G.UnpluggedPrefix .. "Templates", { clear = true })
 local function create_template_autocmd(template, pattern)
 	vim.api.nvim_create_autocmd("BufNewFile", {
 		group = group,
