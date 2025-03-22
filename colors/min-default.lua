@@ -5,6 +5,12 @@ vim.g.colors_name = "min-default"
 local prefix = vim.o.background == "dark" and "NvimLight" or "NvimDark"
 local inverted_prefix = vim.o.background == "dark" and "NvimDark" or "NvimLight"
 
+local function set_accent(group, fg)
+	fg = "NvimLight" .. fg
+	local bg = "NvimDarkGray2"
+	vim.api.nvim_set_hl(0, group, { fg = bg, bg = fg })
+end
+
 local function set_color(group, fg)
 	if vim.o.background == "dark" then
 		fg = "NvimLight" .. fg
@@ -12,9 +18,7 @@ local function set_color(group, fg)
 		return
 	end
 
-	fg = inverted_prefix .. fg
-	local bg = prefix .. "Gray2"
-	vim.api.nvim_set_hl(0, group, { fg = bg, bg = fg })
+	set_accent(group, fg)
 end
 
 local function base_color(groups)
@@ -92,12 +96,8 @@ set_color("Added", "Green")
 set_color("Removed", "Red")
 set_color("Changed", "Yellow")
 
-set_color("Todo", "Magenta")
-
-set_color("MiniStarterItemPrefix", "Yellow")
-set_color("MiniStarterQuery", "Green")
-set_color("MiniStarterCurrent", "Blue")
-set_color("MiniStarterInactive", "Gray2")
+set_accent("Todo", "Magenta")
+set_accent("Fixme", "Red")
 
 -- manual sets
 vim.api.nvim_set_hl(0, "MatchParen", { fg = prefix .. "Cyan", bg = inverted_prefix .. "Blue" })

@@ -1,3 +1,3 @@
-require("config.autocmds.colors")
+require("config.autocmds.highlights")
 require("config.autocmds.lazyvim")
 require("config.autocmds.templates")
