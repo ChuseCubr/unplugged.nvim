@@ -37,7 +37,7 @@ opts.file_events = { "BufEnter", "ShellCmdPost", "FocusGained", "BufWritePost" }
 
 ---Prefix for events to be emitted after updating Git info
 ---@type string
-opts.event_prefix = "UnpluggedGit"
+opts.event_prefix = _G.UnpluggedPrefix .. "Git"
 
 
 -- PRIVATE FIELDS
@@ -47,6 +47,7 @@ local setup = false
 
 
 -- PRIVATE METHODS / UTILS
+
 
 ---vim.system() opts for current file dir
 local function get_git_cmd_opts()
@@ -84,27 +85,13 @@ end
 ---Update branch staging info of `M.branch_status`
 ---@param git_status string[] Output of `git status -sb` as a list of strings
 local function update_branch_staging(git_status)
-	local staged = vim.tbl_map(
-		function(line)
-			local staged_info = line:sub(1, 1)
-			local not_staged_markers = { "#", " ", "?" }
-			local is_staged = not vim.list_contains(not_staged_markers, staged_info)
-			return is_staged and true or nil
-		end,
-		git_status
-	)
-	local has_staged = not vim.tbl_isempty(staged)
+	if #git_status < 2 then return end
 
-	local unstaged = vim.tbl_map(
-		function(line)
-			local unstaged_info = line:sub(2, 2)
-			local not_unstaged_markers = { "#", " " }
-			local is_unstaged = not vim.list_contains(not_unstaged_markers, unstaged_info)
-			return is_unstaged and true or nil
-		end,
-		git_status
-	)
-	local has_unstaged = not vim.tbl_isempty(unstaged)
+	local staged_sign = git_status[2]:sub(1, 1)
+	local has_staged = not (staged_sign == " " or staged_sign == "?")
+
+	local unstaged_sign = git_status[#git_status]:sub(2, 2)
+	local has_unstaged = unstaged_sign ~= " "
 
 	M.branch_status = M.branch_status .. (has_staged and opts.signs.staged or "")
 	M.branch_status = M.branch_status .. (has_unstaged and opts.signs.unstaged or "")
