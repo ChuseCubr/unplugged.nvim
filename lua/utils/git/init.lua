@@ -67,8 +67,7 @@ function M.setup()
 		callback = function(args)
 			M.status.update()
 
-			if not common.check_valid_buf() then return end
-
+			if not common.check_valid_buf(args.buf) then return end
 			M.buf_status.update(args.buf)
 			M.buf_diff.update(args.buf)
 		end
