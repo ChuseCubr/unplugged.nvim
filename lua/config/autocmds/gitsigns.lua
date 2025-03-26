@@ -6,24 +6,26 @@ local group = vim.api.nvim_create_augroup(_G.UnpluggedPrefix .. "GitSigns", { cl
 local guard = false
 
 local highlights = {
-	[git.ChunkTypes.ADDED] = "Added",
-	[git.ChunkTypes.REMOVED] = "Removed",
-	[git.ChunkTypes.CHANGED] = "Changed",
+	[git.chunk_types.ADDED] = "Added",
+	[git.chunk_types.REMOVED] = "Removed",
+	[git.chunk_types.CHANGED] = "Changed",
 }
 
 local signs = {
-	[git.ChunkTypes.ADDED] = "+",
-	[git.ChunkTypes.REMOVED] = "-",
-	[git.ChunkTypes.CHANGED] = "|",
+	[git.chunk_types.ADDED] = "+",
+	[git.chunk_types.REMOVED] = "-",
+	[git.chunk_types.CHANGED] = "|",
 }
 
 local function set_extmarks(buf)
 	vim.api.nvim_buf_clear_namespace(buf, namespace, 0, -1)
-	for _, chunk in ipairs(git.buf_chunks[buf]) do
+	local chunks = git.buf_diff.get(buf)
+	if not chunks then return end
+	for _, chunk in ipairs(chunks) do
 		-- quirks around zero-based indexing
 		-- added and changed chunks are 1 ahead of the actual position
 		-- removed chunks need no offset
-		local offset = chunk.type == git.ChunkTypes.REMOVED and 0 or 1
+		local offset = chunk.type == git.chunk_types.REMOVED and 0 or 1
 		vim.api.nvim_buf_set_extmark(buf, namespace, chunk.line - offset, 0, {
 			end_row = chunk.line + chunk.count - (offset + 1), -- extra offset for end-inclusive indexing
 			sign_text = signs[chunk.type],
@@ -38,7 +40,7 @@ local function setup()
 	guard = true
 
 	vim.api.nvim_create_autocmd("User", {
-		pattern = "UnpluggedGitBufDiff",
+		pattern = git.events.BUF_DIFF,
 		group = group,
 		callback = function(args)
 			set_extmarks(args.data.buf)

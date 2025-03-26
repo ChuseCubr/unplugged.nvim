@@ -4,5 +4,13 @@ My no-plugin Neovim config
 
 ## Features
 
-* LSP integration
-* Custom statusline and winbar with diagnostics and Git integration
+* LSP setup
+* Git integration
+  * Statusline components
+  * Gutter signs
+* Loc/qflist pickers (WIP)
+  * Listed buffers
+* Universal highlights (persistent across colorschemes) for
+  * Comments
+  * TODO, etc. comments
+  * Transparent background

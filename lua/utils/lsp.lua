@@ -1,21 +1,11 @@
 local M = {}
+local common = require("utils.common")
 
 
 -- SETTINGS
 
 ---LSP autocmd group
 local group = vim.api.nvim_create_augroup("UnpluggedLsp", { clear = true })
-
----Buffer types to not init LSP on
----@type string[]
-local do_not_attach_types = {
-	"help",
-	"nofile",
-	"quickfix",
-	"terminal",
-	"prompt",
-}
-
 
 -- PRIVATE FIELDS
 
@@ -36,9 +26,7 @@ end
 ---@param config (vim.lsp.ClientConfig | { root_markers: string[] })
 function M.init_lsp_client(config, opts)
 	return function()
-		local buftype = vim.api.nvim_get_option_value("buftype", { buf = 0 })
-		local do_not_attach = vim.list_contains(do_not_attach_types, buftype)
-		if do_not_attach then return end
+		if not common.check_valid_buf(0) then return end
 
 		opts = opts or {}
 

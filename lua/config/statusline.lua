@@ -1,5 +1,4 @@
 local git = require("utils.git")
-git.setup()
 
 local M = {}
 
@@ -39,12 +38,12 @@ function _G._statusline_component(component, ...)
 end
 
 function M.git_branch()
-	if git.branch_name:len() == 0 then return "" end
-	return "[" .. git.branch_name .. git.branch_status .. "] "
+	if git.branch.get():len() == 0 then return "" end
+	return "[" .. git.branch.get() .. git.status.get() .. "] "
 end
 
 function M.git_status()
-	local cur_buf_status = git.buf_statuses[vim.fn.bufnr()]
+	local cur_buf_status = git.buf_status.get(vim.fn.bufnr())
 	if cur_buf_status == nil then return "" end
 	if cur_buf_status:len() == 0 then return "" end
 	return "[" .. cur_buf_status .. "]"
@@ -97,7 +96,11 @@ end
 
 local group = vim.api.nvim_create_augroup("UnpluggedStatusLine", { clear = true })
 vim.api.nvim_create_autocmd("User", {
-	pattern = { "UnpluggedGitBranchName", "UnpluggedGitBranchStatus", "UnpluggedGitBufStatus" },
+	pattern = {
+		git.events.BRANCH,
+		git.events.STATUS,
+		git.events.BUF_STATUS,
+	},
 	group = group,
 	callback = M.update,
 })
