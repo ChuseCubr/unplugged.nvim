@@ -62,7 +62,7 @@ function M.setup()
 
 			-- navigation
 			vim.keymap.set("n", "gd", vim.lsp.buf.declaration, { desc = "Go to declaration" })
-			vim.keymap.set("i", "gD", vim.lsp.buf.type_definition, { desc = "Go to type definition" })
+			vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "Go to type definition" })
 
 			-- TODO: TO BE DEPRECATED, will become defaults in 0.11
 			-- hover
