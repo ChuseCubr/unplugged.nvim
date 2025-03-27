@@ -1,6 +1,5 @@
 require("config.options")
 require("config.autocmds")
-require("config.commands")
 require("config.keymaps")
 require("config.statusline")
 require("config.lsp")

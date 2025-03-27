@@ -1,3 +1,6 @@
+local picker = require("utils.picker")
+picker.setup()
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -21,4 +24,5 @@ vim.keymap.set("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "To [Q]uick
 
 
 -- custom commands
-vim.keymap.set("n", "<leader><leader>", _G.Picker.bufs, { desc = "Open buffers (picker)" })
+vim.keymap.set("n", "<leader><leader>", picker.bufs, { desc = "Open buffers (picker)" })
+vim.keymap.set("n", "<leader>gf", picker.unstaged_files, { desc = "Git unstaged files (picker)" })
