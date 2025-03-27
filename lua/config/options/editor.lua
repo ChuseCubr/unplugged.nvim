@@ -44,7 +44,11 @@ vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sizestyle = "H"
 vim.g.netrw_sort_sequence = "^\\f\\+[\\/]"
-vim.g.netrw_list_hide = vim.fn["netrw_gitignore#Hide"]() .. ",^\\.\\{1,2}\\f\\+[\\/]\\?"
+
+-- indirection because netrw gets set up after this
+vim.schedule(function()
+	vim.g.netrw_list_hide = vim.fn["netrw_gitignore#Hide"]() .. ",^\\.\\{1,2}\\f\\+[\\/]\\?"
+end)
 
 -- qflist filter
 vim.cmd.packadd("cfilter")

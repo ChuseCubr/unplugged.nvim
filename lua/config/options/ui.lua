@@ -36,12 +36,9 @@ vim.opt.listchars:append({
 	precedes = "«",
 })
 
--- diagnostics
-local signs = { Error = "X ", Warn = "! ", Hint = "H ", Info = "i " }
-for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
+-- cmdline height
+-- not a fan of `messagesopt=wait:{n}`
+vim.o.cmdheight = 2
 
 -- custom colorscheme
 vim.o.background = "dark"
