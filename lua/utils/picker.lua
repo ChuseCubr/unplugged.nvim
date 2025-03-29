@@ -69,22 +69,18 @@ local function get_unstaged_files(stdout)
 	if stdout == nil or stdout:len() == 0 then return {} end
 	local lines = vim.split(stdout, "\n", { trimempty = true })
 
-	---@type ListItem[]
-	local files = {}
-
-	for _, line in ipairs(lines) do
-		local sign = get_unstaged_sign(line)
-		if sign then
+	return vim.tbl_map(
+		function(line)
+			local sign = get_unstaged_sign(line)
+			if not sign then return end
 			local status = sign == "?" and "[Added]" or "[Modified]"
-			local entry = {
+			return {
 				filename = vim.fn.fnamemodify(line:sub(4, -1), ":."),
 				text = status
 			}
-			table.insert(files, entry)
-		end
-	end
-
-	return files
+		end,
+		lines
+	)
 end
 
 
@@ -130,8 +126,8 @@ function M.unstaged_files(opts)
 	)
 end
 
----Make picker globally available (cmdline)
----and sets up autocmds for async `vim.system()`
+---Makes picker globally available (cmdline)
+---and sets up autocmds for async `vim.system()` calls
 function M.setup(opts)
 	if setup then return end
 	setup = true
