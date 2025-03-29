@@ -1,6 +1,9 @@
 local picker = require("utils.picker")
 picker.setup()
 
+local git = require("utils.git")
+git.setup()
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -26,3 +29,6 @@ vim.keymap.set("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "To [Q]uick
 -- custom commands
 vim.keymap.set("n", "<leader><leader>", picker.bufs, { desc = "Open buffers (picker)" })
 vim.keymap.set("n", "<leader>gf", picker.unstaged_files, { desc = "Git unstaged files (picker)" })
+
+vim.keymap.set("n", "]g", git.buf_diff.goto_next, { desc = "Go to next git chunk" })
+vim.keymap.set("n", "[g", git.buf_diff.goto_prev, { desc = "Go to prev git chunk" })
