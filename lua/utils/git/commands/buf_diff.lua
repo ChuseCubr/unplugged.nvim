@@ -68,6 +68,23 @@ local function extract_diff_info(line)
 	return { line = linenr, count = count, type = chunk_type }
 end
 
+---@param get_goto_chunk fun(buf_chunks: GitChunk[], line: integer): GitChunk Function that defines the chunk to jump to
+local function goto(get_goto_chunk)
+	local line = vim.api.nvim_win_get_cursor(0)[1]
+	local buf = vim.api.nvim_get_current_buf()
+	local buf_chunks = M.get(buf)
+
+	if vim.tbl_count(buf_chunks) == 0 then
+		vim.notify("No more git chunks to move to", vim.log.levels.WARN)
+		return
+	end
+
+	local goto_chunk = get_goto_chunk(buf_chunks, line)
+
+	vim.cmd("norm m`")
+	vim.cmd("" .. goto_chunk.line)
+end
+
 local function update(buf, obj)
 	if obj.stdout == nil or obj.stdout:len() == 0 then
 		chunks[buf] = {}
@@ -114,9 +131,45 @@ end
 
 ---Gets the last tracked buf diffs
 ---Update the value using `update()`
----@return GitChunk[]?
+---@return GitChunk[]
 function M.get(buf)
-	return chunks[buf]
+	return chunks[buf] or {}
+end
+
+---Navigates to the next git chunk within the current buffer
+function M.goto_next()
+	goto(function(buf_chunks, line)
+		local next_chunk = vim.iter(buf_chunks):find(
+			---@param chunk GitChunk
+			function(chunk)
+				return chunk.line > line
+			end
+		)
+
+		if next_chunk == nil then
+			next_chunk = buf_chunks[1]
+		end
+
+		return next_chunk
+	end)
+end
+
+---Navigates to the previous git chunk within the current buffer
+function M.goto_prev()
+	goto(function(buf_chunks, line)
+		local prev_chunk = vim.iter(buf_chunks):rev():find(
+			---@param chunk GitChunk
+			function(chunk)
+				return chunk.line < line
+			end
+		)
+
+		if prev_chunk == nil then
+			prev_chunk = buf_chunks[#buf_chunks]
+		end
+
+		return prev_chunk
+	end)
 end
 
 ---Set module options
