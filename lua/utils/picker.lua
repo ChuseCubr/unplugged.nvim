@@ -1,6 +1,7 @@
 --- Populate loc/qf list with entries
 local M = {}
 local common = require("utils.common")
+local git = require("utils.git")
 
 
 -- OPTIONS =====================================================================
@@ -20,17 +21,20 @@ M.group = vim.api.nvim_create_augroup(M.prefix, { clear = true })
 
 -- TYPES =======================================================================
 
----@class ListItem
+---@class BufListItem
+---@field bufnr integer
 ---@field text? string
----@field bufnr? integer
----@field filename? string
+---@field lnum? integer
 
----@class ListWhat
----@field items ListItem[]
----@field title string
+---@class FileListItem
+---@field filename string
+---@field text? string
+---@field lnum? integer
+
+---@alias ListItem BufListItem | FileListItem
 
 ---@class PickerEvent
----@field what ListWhat
+---@field what vim.fn.setqflist.what
 ---@field opts PickerOpts
 
 -- PRIVATE FIELDS / METHODS ====================================================
@@ -39,7 +43,7 @@ M.group = vim.api.nvim_create_augroup(M.prefix, { clear = true })
 local setup = false
 
 ---Set loc or qf list
----@param what table qflist `what` table
+---@param what vim.fn.setqflist.what qflist `what` table
 ---@param opts? PickerOpts Use location list. Defaults to `true`
 local function set_list(what, opts)
 	opts = vim.tbl_extend("force", M.opts, opts or {})
@@ -83,6 +87,13 @@ local function get_unstaged_files(stdout)
 	)
 end
 
+---@param type ChunkType
+local function chunk_type_to_string(type)
+	if type == git.chunk_types.ADDED then return "+" end
+	if type == git.chunk_types.CHANGED then return "|" end
+	return "-"
+end
+
 
 -- PUBLIC METHODS ==============================================================
 
@@ -124,6 +135,29 @@ function M.unstaged_files(opts)
 			})
 		end
 	)
+end
+
+---Pick from git chunks in the current file
+---@param opts PickerOpts
+function M.unstaged_chunks(opts)
+	local buf = vim.api.nvim_get_current_buf()
+	local chunks = git.buf_diff.get(buf)
+	local items = vim.tbl_map(
+		---@param chunk GitChunk
+		---@return ListItem
+		function(chunk)
+			local sign = chunk_type_to_string(chunk.type)
+			local text = vim.api.nvim_buf_get_lines(buf, chunk.line - 1, chunk.line, false)[1]
+			return {
+				bufnr = buf,
+				lnum = chunk.line,
+				text = chunk.count .. sign .. " " .. vim.trim(text)
+			}
+		end,
+		chunks
+	)
+
+	set_list({ items = items, title = "Unstaged git chunks" }, opts)
 end
 
 ---Makes picker globally available (cmdline)

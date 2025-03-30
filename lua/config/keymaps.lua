@@ -21,14 +21,15 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- diagnostics
-vim.keymap.set("n", "<leader>ce", vim.diagnostic.open_float, { desc = "[E]rrors" })
-vim.keymap.set("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "To [L]ocation list" })
-vim.keymap.set("n", "<leader>cq", vim.diagnostic.setqflist, { desc = "To [Q]uickfix list" })
+vim.keymap.set("n", "<leader>ce", vim.diagnostic.open_float, { desc = "Display diagnostics on current line" })
+vim.keymap.set("n", "<leader>cl", vim.diagnostic.setloclist, { desc = "Loclist: Errors" })
+vim.keymap.set("n", "<leader>cL", vim.diagnostic.setqflist, { desc = "Qflist: Errors" })
 
 
 -- custom commands
-vim.keymap.set("n", "<leader><leader>", picker.bufs, { desc = "Open buffers (picker)" })
-vim.keymap.set("n", "<leader>gf", picker.unstaged_files, { desc = "Git unstaged files (picker)" })
+vim.keymap.set("n", "<leader><leader>", picker.bufs, { desc = "Loclist: Open buffers" })
+vim.keymap.set("n", "<leader>gf", picker.unstaged_files, { desc = "Loclist: Unstaged git files" })
+vim.keymap.set("n", "<leader>gc", picker.unstaged_chunks, { desc = "Loclist: Unstaged git chunks" })
 
-vim.keymap.set("n", "]g", git.buf_diff.goto_next, { desc = "Go to next git chunk" })
-vim.keymap.set("n", "[g", git.buf_diff.goto_prev, { desc = "Go to prev git chunk" })
+vim.keymap.set("n", "]g", git.buf_diff.goto_next, { desc = "Jump to the next git chunk in the current buffer" })
+vim.keymap.set("n", "[g", git.buf_diff.goto_prev, { desc = "Jump to the previous git chunk in the current buffer" })

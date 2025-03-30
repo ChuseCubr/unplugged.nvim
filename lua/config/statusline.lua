@@ -1,4 +1,5 @@
 local git = require("utils.git")
+local picker = require("utils.picker")
 
 local M = {}
 
@@ -8,6 +9,7 @@ local statusline = {
 	'%{v:lua._statusline_component("git_branch")}',
 	'%{%v:lua._statusline_component("statusline_diagnostic_highlight")%}',
 	"%t",
+	"%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}",
 	"%#StatusLine# ",
 	'%{v:lua._statusline_component("git_status")}',
 	"%h%m%r",
@@ -21,6 +23,7 @@ local winbar = {
 	"[%n]: ",
 	'%{%v:lua._statusline_component("winbar_diagnostic_highlight")%}',
 	"%f",
+	"%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}",
 	"%#WinBar# ",
 	'%{%v:lua._statusline_component("git_status")%}',
 	"%h%m%r",
@@ -97,9 +100,8 @@ end
 local group = vim.api.nvim_create_augroup("UnpluggedStatusLine", { clear = true })
 vim.api.nvim_create_autocmd("User", {
 	pattern = {
-		git.events.BRANCH,
-		git.events.STATUS,
-		git.events.BUF_STATUS,
+		unpack(vim.tbl_values(git.events)),
+		picker.event,
 	},
 	group = group,
 	callback = M.update,

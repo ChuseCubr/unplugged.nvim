@@ -131,6 +131,7 @@ end
 
 ---Gets the last tracked buf diffs
 ---Update the value using `update()`
+---@param buf integer Buffer number
 ---@return GitChunk[]
 function M.get(buf)
 	return chunks[buf] or {}
