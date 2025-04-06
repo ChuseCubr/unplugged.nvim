@@ -48,4 +48,4 @@ vim.cmd.colorscheme("min-default")
 vim.o.guifont = "IosevkaTerm_NFM:h16"
 
 -- neovide
-vim.g.neovide_transparency = 0.9
+vim.g.neovide_opacity = 0.9

@@ -1,8 +1,8 @@
 local M = {}
 
----vim.system() opts for current file dir
+---vim.system() opts for current dir
 function M.get_cwd_cmd_opts()
-	return { text = true, cwd = vim.fn.expand("%:p:h") }
+	return { text = true, cwd = vim.fn.getcwd() }
 end
 
 ---Expand and escape file name

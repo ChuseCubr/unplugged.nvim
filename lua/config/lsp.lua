@@ -51,4 +51,8 @@ local lsps = vim.tbl_map(
 	vim.api.nvim_get_runtime_file("lsp/*", true)
 )
 
+vim.lsp.config("*", {
+	root_markers = { ".git" },
+})
+
 vim.lsp.enable(lsps)
