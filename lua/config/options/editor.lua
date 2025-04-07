@@ -22,7 +22,7 @@ vim.o.wildignore = vim.o.wildignore .. ",*/node_modules/*,*/bin/*,*/obj/*,"
 
 -- indent options
 vim.o.breakindent = true
-vim.o.expandtab = false
+vim.o.expandtab = true
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
 
