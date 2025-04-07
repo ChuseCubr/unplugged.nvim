@@ -76,6 +76,7 @@ local dimmed = {
 	"Special",
 	"Structure",
 	"Type",
+	"ComplMatchIns",
 }
 
 dimmed_color(dimmed)

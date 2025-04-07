@@ -17,7 +17,7 @@ vim.o.hlsearch = false
 vim.o.shellslash = true
 vim.o.wildmenu = true
 vim.o.wildoptions = "pum,tagfile,fuzzy"
-vim.o.completeopt = "menu,menuone,popup,noinsert,noselect"
+vim.o.completeopt = "menuone,popup,noselect,preinsert,fuzzy"
 vim.o.wildignore = vim.o.wildignore .. ",*/node_modules/*,*/bin/*,*/obj/*,"
 
 -- indent options
