@@ -1,3 +1,5 @@
+local utils = require("utils.common")
+
 -- Append configuration-dependent command arguments
 local function flatten(tbl)
 	local ret = {}
@@ -66,9 +68,19 @@ return {
 	name = "omnisharp",
 	cmd = { "omnisharp.exe", unpack(args) },
 	filetypes = { "cs", "vb" },
-	root_markers = { "omnisharp.json", "function.json" },
-	-- root_dir = function()
-	--
-	-- end
-	-- root_dir = root_pattern('*.sln', '*.csproj', 'omnisharp.json', 'function.json'),
+	root_dir = function(buf, init)
+		local dir = utils.find_root(buf, {
+			"%.sln$",
+			"^.git$",
+			"^omnisharp.json$",
+			"^function.json$",
+		})
+
+		-- only use csproj marker if no other markers exist
+		if not dir then
+			dir = utils.find_root(buf, { "%.csproj$" })
+		end
+
+		init(dir)
+	end,
 }

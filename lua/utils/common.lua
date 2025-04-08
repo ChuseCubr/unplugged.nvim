@@ -1,5 +1,17 @@
 local M = {}
 
+---Find root folder using patterns
+---@param buf integer Buffer number
+---@param patterns string[] List of lua patterns
+function M.find_root(buf, patterns)
+	return vim.fs.root(buf or 0, function(name)
+		for _, pattern in ipairs(patterns) do
+			if name:match(pattern) then return true end
+		end
+		return false
+	end)
+end
+
 ---vim.system() opts for current dir
 function M.get_cwd_cmd_opts()
 	return { text = true, cwd = vim.fn.getcwd() }
