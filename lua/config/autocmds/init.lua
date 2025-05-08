@@ -1,3 +1,4 @@
+_G.Unplugged = {}
 _G.UnpluggedPrefix = "Unplugged"
 vim.api.nvim_exec = vim.api.nvim_exec2
 

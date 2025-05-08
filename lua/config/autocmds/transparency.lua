@@ -1,4 +1,5 @@
--- Transparent background for all colorschemes
+--- Transparent background for all colorschemes
+local M = {}
 
 
 -- Settings
@@ -33,13 +34,12 @@ local function disable()
 	opts.enable = false
 end
 
--- PUBLIC MODULE
 
-_G.TransparentBackground = {}
+-- PUBLIC METHODS
 
 ---Enables transparent background. Pass `false` to disable
 ---@param enabled? boolean
-function _G.TransparentBackground.enable(enabled)
+function M.enable(enabled)
 	if enabled == false then
 		disable()
 		return
@@ -57,11 +57,13 @@ function _G.TransparentBackground.enable(enabled)
 end
 
 ---Toggles transparent background
-function _G.TransparentBackground.toggle()
-	_G.TransparentBackground.enable(not opts.enable)
+function M.toggle()
+	M.enable(not opts.enable)
 end
 
 
--- ENABLE
+-- Enable
+M.enable(opts.enable)
 
-_G.TransparentBackground.enable(opts.enable)
+-- Expose
+_G.Unplugged.TransparentBackground = M

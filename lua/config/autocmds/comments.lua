@@ -1,4 +1,5 @@
--- Enable bright yellow comments regardless of colorscheme
+--- Enable bright yellow comments regardless of colorscheme
+local M = {}
 
 
 -- Settings
@@ -49,13 +50,11 @@ local function disable()
 end
 
 
--- PUBLIC MODULE
-
-_G.HighlightComments = {}
+-- PUBLIC METHODS
 
 ---Highlight comments in bright yellow. Pass `false` to disable.
 ---@param enabled? boolean
-function _G.HighlightComments.enable(enabled)
+function M.enable(enabled)
 	if enabled == false then
 		disable()
 		return
@@ -73,11 +72,13 @@ function _G.HighlightComments.enable(enabled)
 end
 
 ---Toggle highlighting comments in bright yellow
-function _G.HighlightComments.toggle()
-	_G.HighlightComments.enable(not opts.enable)
+function M.toggle()
+	M.enable(not opts.enable)
 end
 
 
---ENABLE
+-- Enable
+M.enable(opts.enable)
 
-_G.HighlightComments.enable(opts.enable)
+-- Expose
+_G.Unplugged.HighlightComments = M

@@ -184,7 +184,7 @@ function M.setup(opts)
 		end
 	})
 
-	_G.Picker = M
+	_G.Unplugged.Picker = M
 end
 
 return M

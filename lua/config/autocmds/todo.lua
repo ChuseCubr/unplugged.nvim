@@ -1,4 +1,5 @@
 -- Enable TODO etc. pattern highlighting
+M = {}
 
 
 -- Settings
@@ -69,13 +70,11 @@ local function disable()
 end
 
 
--- PUBLIC MODULE
-
-_G.HighlightTodo = {}
+-- PUBLIC METHODS
 
 ---Highlight TODO etc. patterns. Pass `false` to disable.
 ---@param enabled? boolean
-function _G.HighlightTodo.enable(enabled)
+function M.enable(enabled)
 	if enabled == false then
 		disable()
 		return
@@ -93,10 +92,13 @@ function _G.HighlightTodo.enable(enabled)
 end
 
 ---Toggle highlighting TODO etc. patterns
-function _G.HighlightTodo.toggle()
-	_G.HighlightTodo.enable(not opts.enable)
+function M.toggle()
+	M.enable(not opts.enable)
 end
 
 
--- ENABLE
-_G.HighlightTodo.enable(opts.enable)
+-- Enable
+M.enable(opts.enable)
+
+-- Expose
+_G.Unplugged.HighlightTodo = M
