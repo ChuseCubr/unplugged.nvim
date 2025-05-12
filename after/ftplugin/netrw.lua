@@ -11,9 +11,13 @@
 --
 -- These mappings aim to bring consistency
 
-local mappings = require("utils.netrw")
-mappings.setup()
+-- Schedule to avoid blocking if initialization takes long
+local buf = vim.api.nvim_get_current_buf()
+vim.schedule(function()
+	local mappings = require("utils.netrw")
+	mappings.setup()
 
-vim.keymap.set("n", "p", mappings.PCallback, { noremap = true, buffer = true, desc = "Preview" })
-vim.keymap.set("n", "v", mappings.VCallback, { noremap = true, buffer = true, desc = "Open in a vertical split" })
-vim.keymap.set("n", "o", mappings.OCallback, { noremap = true, buffer = true, desc = "Open in a horizontal split" })
+	vim.keymap.set("n", "p", mappings.PCallback, { noremap = true, buffer = buf, desc = "Preview" })
+	vim.keymap.set("n", "v", mappings.VCallback, { noremap = true, buffer = buf, desc = "Open in a vertical split" })
+	vim.keymap.set("n", "o", mappings.OCallback, { noremap = true, buffer = buf, desc = "Open in a horizontal split" })
+end)

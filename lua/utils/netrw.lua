@@ -55,6 +55,7 @@ M.setup = function()
 	OMap = vim.api.nvim_replace_termcodes(OMapString, true, false, true)
 
 	setup = true
+	vim.notify("Custom Netrw maps loaded")
 end
 
 return M
