@@ -15,6 +15,8 @@ My no-plugin Neovim config
     * Listed buffers (`<leader><leader>` or `:lua Unplugged.Picker.bufs()`)\*
     * Unstaged files (`<leader>gf` or `:lua Unplugged.Picker.unstaged_files()`)\*
     * Unstaged chunks (`<leader>gc` or `:lua Unplugged.Picker.unstaged_chunks()`)\*
+    * Existing args list (`<leader>af` or `:lua Unplugged.Picker.args_list()`)\*
+    * New args list (prompts for pattern) (`<leader>an` or `:lua Unplugged.Picker.args_list_new()`)\*
   * Universal highlights (persistent across colorschemes) for
     * Comments (`:lua Unplugged.HighlightComments.toggle()`)
     * TODO, etc. comments (`:lua Unplugged.HighlightTodo.toggle()`)

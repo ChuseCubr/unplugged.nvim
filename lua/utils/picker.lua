@@ -160,6 +160,27 @@ function M.unstaged_chunks(opts)
 	set_list({ items = items, title = "Unstaged git chunks" }, opts)
 end
 
+---Pick from files in the args list
+---@opts opts PickerOpts
+function M.args_list(opts)
+	local args = vim.fn.argv()
+	local items = vim.tbl_map(function(item)
+		local normalized = vim.fs.normalize(item)
+		return { filename = item }
+	end, args)
+
+	set_list({ items = items, title = "Args list"}, opts)
+end
+
+---Prompt for new args list and pick from args list
+---@opts opts PickerOpts
+function M.args_list_new(opts)
+	local input = vim.fn.input("Args Pattern: ")
+	if input == "" then return end
+	vim.cmd.args(input)
+	M.args_list(opts)
+end
+
 ---Makes picker globally available (cmdline)
 ---and sets up autocmds for async `vim.system()` calls
 function M.setup(opts)

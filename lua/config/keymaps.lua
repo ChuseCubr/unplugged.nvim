@@ -30,6 +30,8 @@ vim.keymap.set("n", "<leader>cL", vim.diagnostic.setqflist, { desc = "Qflist: Er
 vim.keymap.set("n", "<leader><leader>", picker.bufs, { desc = "Loclist: Open buffers" })
 vim.keymap.set("n", "<leader>gf", picker.unstaged_files, { desc = "Loclist: Unstaged git files" })
 vim.keymap.set("n", "<leader>gc", picker.unstaged_chunks, { desc = "Loclist: Unstaged git chunks" })
+vim.keymap.set("n", "<leader>af", picker.args_list, { desc = "Loclist: Args list" })
+vim.keymap.set("n", "<leader>an", picker.args_list_new, { desc = "Loclist: New args list" })
 
 vim.keymap.set("n", "]g", git.buf_diff.goto_next, { desc = "Jump to the next git chunk in the current buffer" })
 vim.keymap.set("n", "[g", git.buf_diff.goto_prev, { desc = "Jump to the previous git chunk in the current buffer" })
