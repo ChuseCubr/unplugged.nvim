@@ -44,12 +44,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-local lsps = vim.tbl_map(
-	function(file)
-		return vim.fn.fnamemodify(file, ":t:r")
-	end,
-	vim.api.nvim_get_runtime_file("lsp/*", true)
-)
+
+local lsps = vim.iter(vim.fs.dir(vim.fn.stdpath("config") .. "/lsp"))
+		:map(function(file)
+			return vim.fn.fnamemodify(file, ":t:r")
+		end)
+		:totable()
 
 vim.lsp.config("*", {
 	root_markers = { ".git" },
