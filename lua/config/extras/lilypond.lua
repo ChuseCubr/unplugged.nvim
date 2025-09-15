@@ -4,7 +4,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = "*.ly",
 	callback = function (event)
 		vim.system(
-			{ "lilypond", event.file },
+			{ "lilypond", "-dwarning-as-error", event.file },
 			{
 				text = true,
 				cwd = vim.fn.fnamemodify(event.file, ":p:h")
