@@ -118,6 +118,8 @@ local function setup()
 	set_accent("Todo", "Magenta")
 	set_accent("Fixme", "Red")
 
+	set_color("netrwDir", "Cyan")
+
 	-- manual sets
 	vim.api.nvim_set_hl(0, "MatchParen", { fg = prefix .. "Cyan", bg = inverted_prefix .. "Blue" })
 
