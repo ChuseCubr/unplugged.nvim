@@ -3,7 +3,18 @@ local M = {}
 -- get SNR of Netrw
 local snr = require("utils.snr")
 snr.setup()
-local netrwSnr = snr.getSnrByPattern("**/autoload/netrw.vim")
+local netrwSnr
+
+local function getSnr()
+	local runtimePaths = vim.api.nvim_list_runtime_paths()
+	for _, path in ipairs(runtimePaths) do
+		if string.find(path, "netrw$") then
+			return snr.getSnrByPath(path .. "/autoload/netrw.vim")
+		end
+	end
+
+	return snr.getSnrByPattern("**/autoload/netrw.vim")
+end
 
 local setup = false
 local PMap
@@ -40,6 +51,7 @@ end
 
 M.setup = function()
 	if setup then return end
+	netrwSnr = getSnr()
 
 	-- `nmap` mappings taken from Netrw buffer
 	local PMapTemplate = ":<C-U>call <SNR>%d_NetrwPreview(<SNR>%d_NetrwBrowseChgDir(1,<SNR>%d_NetrwGetWord(),1,1))<CR>"
