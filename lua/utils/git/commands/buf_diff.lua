@@ -118,7 +118,7 @@ end
 ---@param buf integer Buffer number
 function M.update(buf)
 	vim.system(
-		{ "git", "diff", "-U0", common.get_buf_path(buf) },
+		{ "git", "diff", "-U0", vim.api.nvim_buf_get_name(buf) },
 		common.get_cwd_cmd_opts(),
 		function(obj)
 			update(buf, obj)

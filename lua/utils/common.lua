@@ -17,12 +17,6 @@ function M.get_cwd_cmd_opts()
 	return { text = true, cwd = vim.fn.getcwd() }
 end
 
----Expand and escape file name
----@param buf integer Buffer number
-function M.get_buf_path(buf)
-	return vim.fn.fnameescape(vim.api.nvim_buf_get_name(buf))
-end
-
 ---Autocmd invoker wrapper
 ---@param pattern string
 ---@param autocmd_opts? vim.api.keyset.exec_autocmds
