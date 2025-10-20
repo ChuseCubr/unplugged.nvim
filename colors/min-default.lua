@@ -67,13 +67,10 @@ local function setup()
 
 	-- resets
 	local base = {
-		"Boolean",
-		"Float",
 		"Function",
 		"Identifier",
 		"Label",
 		"Macro",
-		"Number",
 		"Tag",
 		"@attribute.builtin",
 		"@constant.builtin",
@@ -89,6 +86,8 @@ local function setup()
 
 	-- dim
 	local dimmed = {
+		"Keyword",
+		"Statement",
 		"Delimiter",
 		"Operator",
 		"Special",
@@ -100,25 +99,59 @@ local function setup()
 	dimmed_color(dimmed)
 
 	-- highlights
+	-- comments
 	set_color("Comment", "Yellow")
-	set_color("Keyword", "Blue")
+	set_accent("Todo", "Magenta")
+	set_accent("Fixme", "Red")
 
+	-- declarations
+	set_color("@lsp.typemod.namespace.declaration", "Blue")
+	set_color("@lsp.typemod.enum.declaration", "Blue")
+	set_color("@lsp.typemod.type.declaration", "Blue")
+	set_color("@lsp.typemod.interface.declaration", "Blue")
+	set_color("@lsp.typemod.class.declaration", "Blue")
+	set_color("@lsp.typemod.method.declaration", "Blue")
+	set_color("@lsp.typemod.macro.declaration", "Blue")
+	set_color("@lsp.typemod.function.declaration", "Blue")
+	set_color("@lsp.typemod.variable.declaration", "Blue")
+	set_color("@lsp.typemod.parameter.declaration", "Blue")
+
+	-- strings
 	set_color("String", "Green")
 	set_color("Character", "Green")
 	set_color("SpecialChar", "Green")
 
+	-- literals
+	set_color("Number", "Magenta")
+	set_color("Float", "Magenta")
+	set_color("Boolean", "Magenta")
+
+	-- diagnostics
 	set_color("DiagnosticError", "Red")
 	set_color("DiagnosticWarn", "Yellow")
 	set_color("DiagnosticInfo", "Cyan")
 
+	-- git
 	set_color("Added", "Green")
 	set_color("Removed", "Red")
 	set_color("Changed", "Yellow")
 
-	set_accent("Todo", "Magenta")
-	set_accent("Fixme", "Red")
-
+	-- netrw
 	set_color("netrwDir", "Cyan")
+
+	-- statusline
+	set_statusline_color("StatusLineGreen", "Green")
+	set_statusline_color("StatusLineYellow", "Yellow")
+	set_statusline_color("StatusLineRed", "Red")
+	set_statusline_color("StatusLineBlue", "Blue")
+	set_statusline_color("StatusLineCyan", "Cyan")
+
+	-- winbar
+	set_winbar_color("WinBarGreen", "Green")
+	set_winbar_color("WinBarYellow", "Yellow")
+	set_winbar_color("WinBarRed", "Red")
+	set_winbar_color("WinBarBlue", "Blue")
+	set_winbar_color("WinBarCyan", "Cyan")
 
 	-- manual sets
 	vim.api.nvim_set_hl(0, "MatchParen", { fg = prefix .. "Cyan", bg = inverted_prefix .. "Blue" })
@@ -141,18 +174,6 @@ local function setup()
 	vim.g.terminal_color_13 = vim.g.terminal_color_5
 	vim.g.terminal_color_14 = vim.g.terminal_color_6
 	vim.g.terminal_color_15 = vim.g.terminal_color_7
-
-	set_statusline_color("StatusLineGreen", "Green")
-	set_statusline_color("StatusLineYellow", "Yellow")
-	set_statusline_color("StatusLineRed", "Red")
-	set_statusline_color("StatusLineBlue", "Blue")
-	set_statusline_color("StatusLineCyan", "Cyan")
-
-	set_winbar_color("WinBarGreen", "Green")
-	set_winbar_color("WinBarYellow", "Yellow")
-	set_winbar_color("WinBarRed", "Red")
-	set_winbar_color("WinBarBlue", "Blue")
-	set_winbar_color("WinBarCyan", "Cyan")
 end
 
 vim.schedule(setup)
